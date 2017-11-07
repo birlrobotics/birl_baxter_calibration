@@ -1,0 +1,64 @@
+<?xml version="1.0"?>
+<launch>
+	<arg name="namespace_prefix" default="ur5_kinect_handeyecalibration" />
+
+    <!-- Bring up a xtion -->
+    <include file="$(find openni2_launch)/launch/openni2.launch">
+    </include>
+         
+    <!-- start the Kinect -->
+    <!--<include file="$(find freenect_launch)/launch/freenect.launch" >
+    <arg name="depth_registration" value="true" />
+    </include>-->
+    
+    <!-- arguments about camera and aruco -->
+    <arg name="camera" value="/camera/rgb"/>
+    <arg name="camera_frame"          default="camera_rgb_optical_frame"/>
+    <arg name="marker_frame"          default="aruco_marker_582_frame"/>
+    <arg name="camera_info"           default="$(arg camera)/camera_info"/>
+    <arg name="image"                 default="$(arg camera)/image_rect_color"/>
+    <arg name="markersize" value="0.0431"/>
+    <arg name="markerid"   value="582"/>
+
+    <!-- leave empty and the pose will be published wrt param parent_name -->
+    <arg name="reference_frame"       default="$(arg camera_frame)"/>
+
+    <!-- the node for aruco tracking -->
+    <node name="aruco_tracker" pkg="aruco_ros" type="single">
+      <remap from="/camera_info" to="$(arg camera_info)" />
+      <remap from="/image" to="$(arg image)" />
+
+      <param name="image_is_rectified" value="true"/>
+      <param name="marker_size"        value="$(arg markersize)"/>
+      <param name="marker_id"          value="$(arg markerid)"/>
+      <param name="reference_frame"    value="$(arg reference_frame)"/>
+      <param name="camera_frame"       value="$(arg camera_frame)"/>
+      <param name="marker_frame"       value="$(arg marker_frame)" />
+    </node>
+
+    <!-- the rviz for the result of aruco tracking -->
+    <node name="rviz_node" pkg="rviz" type="rviz"> 
+    </node>
+
+    <!-- record the the marker motion -->
+
+    
+    <!-- start easy_handeye -->
+    <include file="$(find easy_handeye)/launch/calibrate.launch" >
+        <arg name="namespace_prefix" value="$(arg namespace_prefix)" />
+        <arg name="eye_on_hand" value="false" />
+
+        <arg name="tracking_base_frame" value="camera_link" />
+        
+        <arg name="tracking_marker_frame" value="aruco_marker_582_frame" />
+        <arg name="robot_base_frame" value="base" />
+        
+        <arg name="robot_effector_frame" value="right_gripper_base" />
+
+        <arg name="freehand_robot_movement" value="false" />
+        <arg name="robot_velocity_scaling" value="0.5" />
+        <arg name="robot_acceleration_scaling" value="0.2" />
+    </include>
+
+</launch>
+
