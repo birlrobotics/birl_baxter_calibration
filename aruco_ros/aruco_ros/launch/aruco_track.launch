@@ -2,8 +2,10 @@
 <launch>
 
     <!-- Bring up a xtion -->
+
     <include file="$(find openni2_launch)/launch/openni2.launch">
     </include>
+
 
     <!-- arguments about camera and aruco -->
     <arg name="camera" value="/camera/rgb"/>
@@ -11,11 +13,11 @@
     <arg name="marker_frame"          default="aruco_marker_582_frame"/>
     <arg name="camera_info"           default="$(arg camera)/camera_info"/>
     <arg name="image"                 default="$(arg camera)/image_rect_color"/>
-    <arg name="markersize" value="0.115"/>
+    <arg name="markersize" value="0.150"/>
     <arg name="markerid"   value="582"/>
 
     <!-- leave empty and the pose will be published wrt param parent_name -->
-    <arg name="reference_frame"       default="$(arg camera_frame)"/>
+    <arg name="reference_frame"       default="/base"/>
 
     <!-- the node for aruco tracking -->
     <node name="aruco_tracker" pkg="aruco_ros" type="single">
@@ -31,10 +33,20 @@
     </node>
 
     <!-- the rviz for the result of aruco tracking -->
+    
     <node name="rviz_node" pkg="rviz" type="rviz"> 
     </node>
-
-    <!-- record the the marker motion -->
     
+  
+    <!-- baxter to camera
+NOTE: In aruco_hand_eye.launch file, line 34 and line 35 indicate the transformation from /camere_rgb_optical_frame to /camer_link. Such transformation let the output calibration result is between /camera_link and /base.  
+-->
+<node pkg="tf" type="static_transform_publisher" name="pub_tf_baxterBase2upcameraLink" args=" 0.652570 -0.093530 0.800550  0.030955 0.654864 -0.022162 0.754787  /base /camera_link 100 " />
 
+<!-- camera to opennit track -->
+<node pkg="tf" type="static_transform_publisher" name="pub_tf_cameraDepthFrame2openniDepthFrame" args="0 0 0 0 0 0 /camera_depth_frame /openni_depth_frame 100" />
+
+<!-- change marker582 to now_co -->
+<node name="aruco_new_co" pkg="trac_ik_examples" type="broadcast"/>
 </launch>
+

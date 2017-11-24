@@ -1,8 +1,0 @@
-<launch>
-
-<node pkg="tf" type="static_transform_publisher" name="transform_change3" args="0.171414 -0.055809 0.253242 -1.454077 0.090845 -1.529624 /base /camera_link 100 " />
-
-</launch>  
-
-
-

@@ -1,0 +1,18 @@
+<launch>
+
+<!-- 
+baxter to camera
+NOTE: In aruco_hand_eye.launch file, line 34 and line 35 indicate the transformation from /camere_rgb_optical_frame to /camer_link. Such transformation let the output calibration result is between /camera_link and /base.  
+-->
+<node pkg="tf" type="static_transform_publisher" name="pub_tf_baxterBase2upcameraLink" args=" 0.652570 -0.093530 0.800550  0.030955 0.654864 -0.022162 0.754787  /base /camera_link 100 " />
+
+<!-- camera to opennit track -->
+<node pkg="tf" type="static_transform_publisher" name="pub_tf_cameraDepthFrame2openniDepthFrame" args="0 0 0 0 0 0 /camera_depth_frame /openni_depth_frame 100" />
+
+</launch>  
+
+
+<!-- 
+Base xyz: ( 0.664969 -0.093833 0.895197 ) rpy: ( 0.188830 1.428255 0.110134 ) xyzw: ( 0.035244 0.654974 -0.020246 0.754558 )
+Base xyz: ( 0.652570 -0.093530 0.800550 ) rpy: ( 0.125431 1.428818 0.050104 ) xyzw: ( 0.030955 0.654864 -0.022162 0.754787 )
+-->
